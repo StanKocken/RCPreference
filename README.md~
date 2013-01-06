@@ -41,12 +41,16 @@ An example of JSON can be found from this page : http://stankocken.com/json_test
 
 
 From you're code you can get a value from : 
-        // get a remote preference
-        RCPreference rcp = RCPreference.getRCPreference(this);
-        // get the value of time
-        String dateTime1 = rcp.getString("No value", "date_time"); // "No value" is the default value
-        // get the sub sub value of a string
-        String test1 = rcp.getString("No value", "tst_tab", "tst_sub_tab", "test_sub_sub_string");
+
+
+    // get a remote preference
+    RCPreference rcp = RCPreference.getRCPreference(this);
+    // get the value of time
+    String dateTime1 = rcp.getString("No value", "date_time"); // "No value" is the default value
+    // get the sub sub value of a string
+    String test1 = rcp.getString("No value", "tst_tab", "tst_sub_tab", "test_sub_sub_string");
+
+
 
 You just have to launch your download from your code by calling:
 RCPreference.downloadFromUrl(this, "http://stankocken.com/json_test.php", true);

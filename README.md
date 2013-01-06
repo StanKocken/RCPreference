@@ -53,7 +53,17 @@ From you're code you can get a value from :
 
 
 You just have to launch your download from your code by calling:
-RCPreference.downloadFromUrl(this, "http://stankocken.com/json_test.php", true);
 
-With the last parameters, set to "true" in this example, you choose to apply the preferences downloaded when you call "RCPreference.loadPendingToCurrent(this);"
+
+    RCPreference.downloadFromUrl(this, "http://stankocken.com/json_test.php", true);
+
+
+
+With the last parameters, set to "true" in this example, you choose to apply the preferences downloaded when you call:
+
+
+    RCPreference.loadPendingToCurrent(this);
+
+
+
 
