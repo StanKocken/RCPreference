@@ -36,6 +36,11 @@ An example of JSON can be found from this page : http://stankocken.com/json_test
 	tst_float: 3.14
 }
 
+
+    command(:rest2html, /re?st(.txt)?/)
+
+
+
 From you're code you can get a value from : 
         // get a remote preference
         RCPreference rcp = RCPreference.getRCPreference(this);
