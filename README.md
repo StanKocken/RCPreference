@@ -7,6 +7,7 @@ What is RCPrefence ?
 ============
 
 RCPreference is a library similar to SharePreference but where any value can be set by a remote server from a JSON.
+
 From example you can set a default value to the key "my_test_key" but which can be automatically changed by a server side when you want.
 
 This system support also a muli-level key.
@@ -15,6 +16,7 @@ How to use it ?
 ============
 
 RCPreference is an Android Library but it can be used also as a .jar.
+
 You can used it like the SharePreference. Becarefull, with the multi-level key, the order of your default value and the key is invert.
 
 Example
