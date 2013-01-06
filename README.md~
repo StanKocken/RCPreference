@@ -21,7 +21,9 @@ Example
 ============
 
 An example of JSON can be found from this page : http://stankocken.com/json_test.php
-{
+
+
+    {
 	date_time: "2013-01-06 16:39:06",
 	tst_int: 88,
 	tst_string: "I'm your test value",
@@ -34,10 +36,7 @@ An example of JSON can be found from this page : http://stankocken.com/json_test
 		}
 	},
 	tst_float: 3.14
-}
-
-
-    command(:rest2html, /re?st(.txt)?/)
+    }
 
 
 
