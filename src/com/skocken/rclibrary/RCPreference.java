@@ -28,7 +28,7 @@ public class RCPreference {
     private static final String        SEPARATOR                          = "|-oRCo->|";
     private static final StringBuilder sStringBuilder                     = new StringBuilder();
 
-    private static boolean             sDebugMode;
+    public  static boolean             sDebugMode;
 
     private Context                    mContext;
     private SharedPreferences          mSharePreference;

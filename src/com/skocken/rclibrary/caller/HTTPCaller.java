@@ -30,6 +30,9 @@ import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
 
 import android.os.Build;
+import android.util.Log;
+
+import com.skocken.rclibrary.RCPreference;
 
 /**
  * @author Stan Kocken (stan.kocken@gmail.com)
@@ -37,7 +40,6 @@ import android.os.Build;
  */
 public class HTTPCaller {
     /** Used locally to tag Logs */
-    @SuppressWarnings("unused")
     private static final String TAG = HTTPCaller.class.getSimpleName();
 
     public static String loadFromUrl(String url) {
@@ -79,15 +81,8 @@ public class HTTPCaller {
                 try {
                     // do this wherever you are wanting to POST
                     HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
-                    // set the output to true, indicating you are outputting(uploading) POST data
-                    conn.setDoOutput(true);
                     // once you set the output to true, you don't really need to set the request method to post, but I'm doing it anyway
-                    conn.setRequestMethod("POST");
-
-                    // Android documentation suggested that you set the length of the data you are sending to the server, BUT
-                    // do NOT specify this length in the header by using conn.setRequestProperty("Content-Length", length);
-                    // use this instead.
-                    conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                    conn.setRequestMethod("GET");
 
                     // build the string to store the response text from the server
                     StringBuilder sb = new StringBuilder();
@@ -102,10 +97,19 @@ public class HTTPCaller {
                     return sb.toString();
 
                 } catch (MalformedURLException ex) {
+                    if (RCPreference.sDebugMode) {
+                        Log.v(TAG, "RCLibrary : MalformedURLException", ex);
+                    }
                 } catch (IOException ex) {
+                    if (RCPreference.sDebugMode) {
+                        Log.v(TAG, "RCLibrary : IOException", ex);
+                    }
                 }
             }
         } catch (Exception ex) {
+            if (RCPreference.sDebugMode) {
+                Log.v(TAG, "RCLibrary : Exception", ex);
+            }
         }
         return null;
     }
