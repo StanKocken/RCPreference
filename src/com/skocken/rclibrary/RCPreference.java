@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 
 import android.content.Context;
@@ -285,6 +286,38 @@ public class RCPreference {
      */
     public String getString(String defValue, String... keys) {
         return getSP().getString(convertKey(keys), defValue);
+    }
+
+    /**
+     * Retrieve a JSONObject value from the preferences.
+     * 
+     * @param defValue
+     *            Value to return if this preference does not exist.
+     * @param keys
+     *            The name of the preference to retrieve. You can use a multi-
+     *            level of keys.
+     * 
+     * @return Returns the preference value if it exists, or defValue. Throws
+     *         ClassCastException if there is a preference with this name that is not
+     *         a String.
+     * 
+     * @throws ClassCastException
+     */
+    public JSONArray getJSONArray(JSONArray defValue, String... keys) {
+        String json = getSP().getString(convertKey(keys), null);
+        if(json == null) {
+            return defValue;
+        }
+        JSONArray jsonArray;
+        try {
+            jsonArray = new JSONArray(json);
+        } catch (JSONException e) {
+            if (RCPreference.isDebug()) {
+                Log.w(TAG, e);
+            }
+            jsonArray = defValue;
+        }
+        return jsonArray;
     }
 
     /**

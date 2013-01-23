@@ -3,6 +3,8 @@
  */
 package com.skocken.rclibrary;
 
+import org.json.JSONArray;
+
 import android.annotation.TargetApi;
 import android.content.SharedPreferences.Editor;
 import android.os.Build;
@@ -36,7 +38,7 @@ public class RCEditor {
      * @throws ClassCastException
      */
     public RCEditor putObject(Object value, String... keys) {
-        if(value == null) {
+        if (value == null) {
             putString(null, keys);
         } else if (value instanceof Integer) {
             putInt(((Integer) value).intValue(), keys);
@@ -50,8 +52,10 @@ public class RCEditor {
             putFloat(((Double) value).floatValue(), keys);
         } else if (value instanceof Float) {
             putFloat(((Float) value).floatValue(), keys);
+        } else if (value instanceof JSONArray) {
+            putJSONArray((JSONArray) value, keys);
         } else if (RCPreference.isDebug()) {
-            Log.e(TAG, "RCLibrary : You try to store a value into RCPreference which is not an instance of Integer, String, Long, Boolean, Float or Double : "+value);
+            Log.e(TAG, "RCLibrary : You try to store a value into RCPreference which is not an instance of Integer, String, Long, Boolean, Float, Double or JSONArray : " + value);
         }
         return this;
     }
@@ -69,6 +73,22 @@ public class RCEditor {
      */
     public RCEditor putString(String value, String... keys) {
         mEditor.putString(RCPreference.convertKey(keys), value);
+        return this;
+    }
+
+    /**
+     * Set a JSONArray value in the preferences editor, to be written back once {@link #commit} or {@link #apply} are called.
+     * 
+     * @param value
+     *            The new value for the preference.
+     * @param keys
+     *            The name of the preference to retrieve. You can use a multilevel of keys.
+     * 
+     * @return Returns a reference to the same RCEditor object, so you can
+     *         chain put calls together.
+     */
+    public RCEditor putJSONArray(JSONArray value, String... keys) {
+        mEditor.putString(RCPreference.convertKey(keys), value.toString());
         return this;
     }
 

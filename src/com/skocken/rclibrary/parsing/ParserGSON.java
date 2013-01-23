@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -56,10 +55,6 @@ public class ParserGSON {
                     }
                     if (jsonObject.isNull((String) key)) {
                         editor.putObject((String) null, RCPreference.convertKey(newKeys));
-                    } else if (value instanceof JSONArray) {
-                        if (RCPreference.isDebug()) {
-                            Log.e(TAG, "RCLibrary : We cannot unserialize an array into preference");
-                        }
                     } else if (value instanceof JSONObject) {
                         parseObject(editor, (JSONObject) value, newKeys);
                     } else {
