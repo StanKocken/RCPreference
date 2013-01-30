@@ -29,7 +29,7 @@ public class RCPreference {
     private static final String        SEPARATOR                          = "|-oRCo->|";
     private static final StringBuilder sStringBuilder                     = new StringBuilder();
 
-    public  static boolean             sDebugMode;
+    public static boolean              sDebugMode;
 
     private Context                    mContext;
     private SharedPreferences          mSharePreference;
@@ -88,6 +88,38 @@ public class RCPreference {
      *            "loadPendingToPending(Context context)" when you want to apply the previous download from your URL.
      */
     public static void downloadFromUrl(final Context context, final String url, final boolean loadAndWaitToApply) {
+        setRCPreferenceByURL(context, url, loadAndWaitToApply);
+    }
+
+    /**
+     * Download some preference by the URL given
+     * 
+     * @param context
+     *            The context to retrieve the preference
+     * @param url
+     *            The URL of the file to load the JSON preference
+     * @param loadAndWaitToApply
+     *            set to false if you want the current value into preference as soon as possible. If you set this to true, you should use
+     *            "loadPendingToPending(Context context)" when you want to apply the previous download from your URL.
+     */
+    public static void setRCPreferenceByURL(final Context context, final String url, final boolean loadAndWaitToApply) {
+        setRCPreferenceByURL(context, url, loadAndWaitToApply, null);
+    }
+
+    /**
+     * Download some preference by the URL given
+     * 
+     * @param context
+     *            The context to retrieve the preference
+     * @param url
+     *            The URL of the file to load the JSON preference
+     * @param loadAndWaitToApply
+     *            set to false if you want the current value into preference as soon as possible. If you set this to true, you should use
+     *            "loadPendingToPending(Context context)" when you want to apply the previous download from your URL.
+     * @param listener
+     *            The listener to notify when it's over
+     */
+    public static void setRCPreferenceByURL(final Context context, final String url, final boolean loadAndWaitToApply, final RCPreferenceUpdateListener listener) {
         if (sDebugMode) {
             Log.v(TAG, "RCLibrary : downloadFromUrl (load and wait ? " + loadAndWaitToApply + ") : " + url);
         }
@@ -99,17 +131,49 @@ public class RCPreference {
                 }
                 String json = HTTPCaller.loadFromUrl(url);
                 if (sDebugMode) {
-                    Log.v(TAG, "RCLibrary : end download : "+json);
+                    Log.v(TAG, "RCLibrary : end download : " + json);
                 }
-                try {
-                    ParserGSON.parseAndSave(context, json, loadAndWaitToApply);
-                } catch (JSONException e) {
-                    if (sDebugMode) {
-                        Log.v(TAG, "RCLibrary : ", e);
-                    }
-                }
+                setRCPreferenceByJSON(context, json, loadAndWaitToApply, listener);
             }
         }).start();
+    }
+
+    /**
+     * Apply some preference from the JSON given
+     * 
+     * @param context
+     *            The context to retrieve the preference
+     * @param json
+     *            The JSON to load into preference
+     * @param loadAndWaitToApply
+     *            set to false if you want the current value into preference as soon as possible. If you set this to true, you should use
+     *            "loadPendingToPending(Context context)" when you want to apply the previous download from your URL.
+     */
+    public static void setRCPreferenceByJSON(final Context context, final String json, final boolean loadAndWaitToApply) {
+        setRCPreferenceByJSON(context, json, loadAndWaitToApply, null);
+    }
+
+    /**
+     * Apply some preference from the JSON given
+     * 
+     * @param context
+     *            The context to retrieve the preference
+     * @param json
+     *            The JSON to load into preference
+     * @param loadAndWaitToApply
+     *            set to false if you want the current value into preference as soon as possible. If you set this to true, you should use
+     *            "loadPendingToPending(Context context)" when you want to apply the previous download from your URL.
+     * @param listener
+     *            The listener to notify when it's over
+     */
+    public static void setRCPreferenceByJSON(final Context context, final String json, final boolean loadAndWaitToApply, RCPreferenceUpdateListener listener) {
+        try {
+            ParserGSON.parseAndSave(context, json, loadAndWaitToApply, listener);
+        } catch (JSONException e) {
+            if (sDebugMode) {
+                Log.v(TAG, "RCLibrary : ", e);
+            }
+        }
     }
 
     /**
@@ -305,7 +369,7 @@ public class RCPreference {
      */
     public JSONArray getJSONArray(JSONArray defValue, String... keys) {
         String json = getSP().getString(convertKey(keys), null);
-        if(json == null) {
+        if (json == null) {
             return defValue;
         }
         JSONArray jsonArray;

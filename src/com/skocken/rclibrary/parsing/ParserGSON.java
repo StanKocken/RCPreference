@@ -15,6 +15,7 @@ import android.util.Log;
 
 import com.skocken.rclibrary.RCEditor;
 import com.skocken.rclibrary.RCPreference;
+import com.skocken.rclibrary.RCPreferenceUpdateListener;
 
 /**
  * @author Stan Kocken (stan.kocken@gmail.com)
@@ -25,6 +26,10 @@ public class ParserGSON {
     private static final String TAG = ParserGSON.class.getSimpleName();
 
     public static void parseAndSave(Context context, String json, boolean loadInPendingPreference) throws JSONException {
+        parseAndSave(context, json, loadInPendingPreference, null);
+    }
+
+    public static void parseAndSave(Context context, String json, boolean loadInPendingPreference, RCPreferenceUpdateListener listener) throws JSONException {
         if (json != null) {
             RCPreference rcPref = RCPreference.getRCPreference(context);
             rcPref.setPendingMode(loadInPendingPreference);
@@ -33,6 +38,9 @@ public class ParserGSON {
             editor.apply();
             if (RCPreference.isDebug()) {
                 Log.v(TAG, "RCLibrary : JSON saved");
+            }
+            if(listener != null) {
+                listener.onRCPreferenceUpdated(context, rcPref, loadInPendingPreference);
             }
         } else if (RCPreference.isDebug()) {
             Log.w(TAG, "RCLibrary : No JSON to save");
