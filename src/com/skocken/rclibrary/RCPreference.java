@@ -353,6 +353,29 @@ public class RCPreference {
     }
 
     /**
+     * Retrieve a String value from the preferences.
+     * 
+     * @param defResIdValue
+     *            Id of the String Resources to return if this preference does not exist.
+     * @param keys
+     *            The name of the preference to retrieve. You can use a multi-
+     *            level of keys.
+     * 
+     * @return Returns the preference value if it exists, or defValue. Throws
+     *         ClassCastException if there is a preference with this name that is not
+     *         a String.
+     * 
+     * @throws ClassCastException
+     */
+    public String getString(int defResIdValue, String... keys) {
+        String result = getString(null, keys);
+        if (result == null) {
+            mContext.getString(defResIdValue);
+        }
+        return result;
+    }
+
+    /**
      * Retrieve a JSONObject value from the preferences.
      * 
      * @param defValue
@@ -380,6 +403,38 @@ public class RCPreference {
                 Log.w(TAG, e);
             }
             jsonArray = defValue;
+        }
+        return jsonArray;
+    }
+
+    /**
+     * Retrieve a JSONObject value from the preferences.
+     * 
+     * @param defJSONValue
+     *            JSON of the JSONArray to return if this preference does not exist.
+     * @param keys
+     *            The name of the preference to retrieve. You can use a multi-
+     *            level of keys.
+     * 
+     * @return Returns the preference value if it exists, or defValue. Throws
+     *         ClassCastException if there is a preference with this name that is not
+     *         a String.
+     * 
+     * @throws ClassCastException
+     */
+    public JSONArray getJSONArray(String defJSONValue, String... keys) {
+        String json = getSP().getString(convertKey(keys), null);
+        if (json == null) {
+            json = defJSONValue;
+        }
+        JSONArray jsonArray;
+        try {
+            jsonArray = new JSONArray(json);
+        } catch (JSONException e) {
+            if (RCPreference.isDebug()) {
+                Log.w(TAG, e);
+            }
+            jsonArray = null;
         }
         return jsonArray;
     }
