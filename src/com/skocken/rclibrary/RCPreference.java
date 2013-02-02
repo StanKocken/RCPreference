@@ -370,7 +370,7 @@ public class RCPreference {
     public String getString(int defResIdValue, String... keys) {
         String result = getString(null, keys);
         if (result == null) {
-            mContext.getString(defResIdValue);
+            return mContext.getString(defResIdValue);
         }
         return result;
     }
