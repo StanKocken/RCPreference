@@ -369,7 +369,7 @@ public class RCPreference {
      */
     public String getString(int defResIdValue, String... keys) {
         String result = getString(null, keys);
-        if (result == null) {
+        if (result == null && defResIdValue > 0) {
             return mContext.getString(defResIdValue);
         }
         return result;
