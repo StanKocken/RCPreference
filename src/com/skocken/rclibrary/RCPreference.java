@@ -425,6 +425,9 @@ public class RCPreference {
     public JSONArray getJSONArray(String defJSONValue, String... keys) {
         String json = getSP().getString(convertKey(keys), null);
         if (json == null) {
+        	if (defJSONValue == null) {
+        		return null;
+        	}
             json = defJSONValue;
         }
         JSONArray jsonArray;
