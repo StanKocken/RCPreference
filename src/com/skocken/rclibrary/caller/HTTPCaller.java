@@ -97,17 +97,17 @@ public class HTTPCaller {
                     return sb.toString();
 
                 } catch (MalformedURLException ex) {
-                    if (RCPreference.sDebugMode) {
+                    if (RCPreference.isDebug()) {
                         Log.v(TAG, "RCLibrary : MalformedURLException", ex);
                     }
                 } catch (IOException ex) {
-                    if (RCPreference.sDebugMode) {
+                    if (RCPreference.isDebug()) {
                         Log.v(TAG, "RCLibrary : IOException", ex);
                     }
                 }
             }
         } catch (Exception ex) {
-            if (RCPreference.sDebugMode) {
+            if (RCPreference.isDebug()) {
                 Log.v(TAG, "RCLibrary : Exception", ex);
             }
         }
