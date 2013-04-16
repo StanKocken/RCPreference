@@ -23,20 +23,21 @@ import com.skocken.rclibrary.parsing.ParserGSON;
  */
 public class RCPreference {
     /** Used locally to tag Logs */
-    private static final String        TAG                                = RCPreference.class.getSimpleName();
-    private static final String        SHARED_PREFERENCES_NAME            = "com.skocken.rclibrary.RCPreference";
-    private static final String        SHARED_PREFERENCES_NAME_NEXTLAUNCH = "com.skocken.rclibrary.RCPreferenceNEXTLAUNCH";
-    private static final String        SEPARATOR                          = "|-oRCo->|";
-    private static final StringBuilder sStringBuilder                     = new StringBuilder();
+    private static final String TAG = RCPreference.class.getSimpleName();
+    private static final String SHARED_PREFERENCES_NAME = "com.skocken.rclibrary.RCPreference";
+    private static final String SHARED_PREFERENCES_NAME_NEXTLAUNCH = "com.skocken.rclibrary.RCPreferenceNEXTLAUNCH";
+    private static final String SEPARATOR = "|-oRCo->|";
+    private static final StringBuilder sStringBuilder = new StringBuilder();
 
-    public static boolean              sDebugMode;
+    private static boolean sDebugMode;
+    private static boolean sCatchAllException = false;
 
-    private Context                    mContext;
-    private SharedPreferences          mSharePreference;
+    private Context mContext;
+    private SharedPreferences mSharePreference;
 
-    private RCEditor                   mEditor;
+    private RCEditor mEditor;
 
-    private boolean                    mSaveInPending                     = false;
+    private boolean mSaveInPending = false;
 
     /**
      * Constructor private
@@ -57,6 +58,11 @@ public class RCPreference {
         return pref;
     }
 
+    public void release() {
+        mContext = null;
+        mSharePreference = null;
+    }
+
     /**
      * Set the debug mode to display the logs
      * 
@@ -74,6 +80,27 @@ public class RCPreference {
      */
     public static boolean isDebug() {
         return sDebugMode;
+    }
+
+    /**
+     * Determine if we need to catch all exception (and return by the default value in this case), or just let the system throw exceptions
+     * (like ClassCastException).
+     * 
+     * @return the catchAllException
+     */
+    public static boolean isCatchAllException() {
+        return sCatchAllException;
+    }
+
+    /**
+     * Set if we need to catch all exception (and return by the default value in this case), or just let the system throw exceptions (like
+     * ClassCastException).
+     * 
+     * @param catchAllException
+     *            the catchAllException to set
+     */
+    public static void setCatchAllException(boolean catchAllException) {
+        sCatchAllException = catchAllException;
     }
 
     /**
@@ -273,7 +300,18 @@ public class RCPreference {
      * @throws ClassCastException
      */
     public boolean getBoolean(boolean defValue, String... keys) {
-        return getSP().getBoolean(convertKey(keys), defValue);
+        if (sCatchAllException) {
+            try {
+                return getSP().getBoolean(convertKey(keys), defValue);
+            } catch (Exception ex) {
+                if (isDebug()) {
+                    Log.w(TAG, ex);
+                }
+                return defValue;
+            }
+        } else {
+            return getSP().getBoolean(convertKey(keys), defValue);
+        }
     }
 
     /**
@@ -292,7 +330,27 @@ public class RCPreference {
      * @throws ClassCastException
      */
     public float getFloat(float defValue, String... keys) {
-        return getSP().getFloat(convertKey(keys), defValue);
+        if (sCatchAllException) {
+            try {
+                return getSP().getFloat(convertKey(keys), defValue);
+            } catch (Exception ex) {
+                if (isDebug()) {
+                    Log.w(TAG, ex);
+                }
+                if (ex instanceof ClassCastException) {
+                    try {
+                        return getSP().getInt(convertKey(keys), Math.round(defValue));
+                    } catch (Exception ex2) {
+                        if (isDebug()) {
+                            Log.w(TAG, ex2);
+                        }
+                    }
+                }
+                return defValue;
+            }
+        } else {
+            return getSP().getFloat(convertKey(keys), defValue);
+        }
     }
 
     /**
@@ -311,7 +369,27 @@ public class RCPreference {
      * @throws ClassCastException
      */
     public int getInt(int defValue, String... keys) {
-        return getSP().getInt(convertKey(keys), defValue);
+        if (sCatchAllException) {
+            try {
+                return getSP().getInt(convertKey(keys), defValue);
+            } catch (Exception ex) {
+                if (isDebug()) {
+                    Log.w(TAG, ex);
+                }
+                if (ex instanceof ClassCastException) {
+                    try {
+                        return (int) Math.round(getSP().getFloat(convertKey(keys), defValue));
+                    } catch (Exception ex2) {
+                        if (isDebug()) {
+                            Log.w(TAG, ex2);
+                        }
+                    }
+                }
+                return defValue;
+            }
+        } else {
+            return getSP().getInt(convertKey(keys), defValue);
+        }
     }
 
     /**
@@ -330,7 +408,18 @@ public class RCPreference {
      * @throws ClassCastException
      */
     public long getLong(long defValue, String... keys) {
-        return getSP().getLong(convertKey(keys), defValue);
+        if (sCatchAllException) {
+            try {
+                return getSP().getLong(convertKey(keys), defValue);
+            } catch (Exception ex) {
+                if (isDebug()) {
+                    Log.w(TAG, ex);
+                }
+                return defValue;
+            }
+        } else {
+            return getSP().getLong(convertKey(keys), defValue);
+        }
     }
 
     /**
@@ -349,7 +438,18 @@ public class RCPreference {
      * @throws ClassCastException
      */
     public String getString(String defValue, String... keys) {
-        return getSP().getString(convertKey(keys), defValue);
+        if (sCatchAllException) {
+            try {
+                return getSP().getString(convertKey(keys), defValue);
+            } catch (Exception ex) {
+                if (isDebug()) {
+                    Log.w(TAG, ex);
+                }
+                return defValue;
+            }
+        } else {
+            return getSP().getString(convertKey(keys), defValue);
+        }
     }
 
     /**
@@ -391,7 +491,7 @@ public class RCPreference {
      * @throws ClassCastException
      */
     public JSONArray getJSONArray(JSONArray defValue, String... keys) {
-        String json = getSP().getString(convertKey(keys), null);
+        String json = getString(null, keys);
         if (json == null) {
             return defValue;
         }
@@ -399,7 +499,7 @@ public class RCPreference {
         try {
             jsonArray = new JSONArray(json);
         } catch (JSONException e) {
-            if (RCPreference.isDebug()) {
+            if (isDebug()) {
                 Log.w(TAG, e);
             }
             jsonArray = defValue;
@@ -425,16 +525,16 @@ public class RCPreference {
     public JSONArray getJSONArray(String defJSONValue, String... keys) {
         String json = getSP().getString(convertKey(keys), null);
         if (json == null) {
-        	if (defJSONValue == null) {
-        		return null;
-        	}
+            if (defJSONValue == null) {
+                return null;
+            }
             json = defJSONValue;
         }
         JSONArray jsonArray;
         try {
             jsonArray = new JSONArray(json);
         } catch (JSONException e) {
-            if (RCPreference.isDebug()) {
+            if (isDebug()) {
                 Log.w(TAG, e);
             }
             jsonArray = null;
