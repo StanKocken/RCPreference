@@ -3,9 +3,11 @@
  */
 package com.skocken.rclibrary;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -559,6 +561,47 @@ public class RCPreference {
             mEditor = new RCEditor(getSP().edit());
         }
         return mEditor;
+    }
+    
+    /**
+     * Retrieve all keys from the preferences.
+     *
+     * @return Returns a list containing the keys representing
+     * the preferences.
+     */
+    public List<String[]> getKeys() {
+        return getSubKeys();
+    }
+
+    /**
+     * Retrieve all keys from the preferences.
+     * @param keys The starting keys to find the subkeys
+     * @return Returns a list containing the keys representing
+     * the preferences.
+     */
+    public List<String[]> getSubKeys(String... keys) {
+        String startKey = convertKey(keys);
+        Set<String> keysInMap = getSP().getAll().keySet();
+        List<String[]> collectionSetSubKey = null;
+        for (String keyInMap : keysInMap) {
+            if (startKey == null || keyInMap.startsWith(startKey)) {
+                String[] setSubKey = convertKeyAsSet(keyInMap);
+                if (setSubKey != null) {
+                    if (collectionSetSubKey == null) {
+                        collectionSetSubKey = new ArrayList<String[]>();
+                    }
+                    collectionSetSubKey.add(setSubKey);
+                }
+            }
+        }
+        return collectionSetSubKey;
+    }
+
+    public static String[] convertKeyAsSet(String key) {
+        if (key != null) {
+            return key.split(Pattern.quote(SEPARATOR));
+        }
+        return null;
     }
 
     /**
