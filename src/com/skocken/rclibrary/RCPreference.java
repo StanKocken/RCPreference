@@ -65,6 +65,18 @@ public class RCPreference {
         mSharePreference = null;
     }
 
+    public boolean isEmpty() {
+        Map<String, ?> map = getSP().getAll();
+        if (map != null && !map.isEmpty()) {
+            return false;
+        }
+        boolean wasPending = mSaveInPending;
+        setPendingMode(!wasPending);
+        map = getSP().getAll();
+        setPendingMode(wasPending);
+        return map == null || map.isEmpty();
+    }
+
     /**
      * Set the debug mode to display the logs
      * 
@@ -562,12 +574,12 @@ public class RCPreference {
         }
         return mEditor;
     }
-    
+
     /**
      * Retrieve all keys from the preferences.
-     *
+     * 
      * @return Returns a list containing the keys representing
-     * the preferences.
+     *         the preferences.
      */
     public List<String[]> getKeys() {
         return getSubKeys();
@@ -575,9 +587,11 @@ public class RCPreference {
 
     /**
      * Retrieve all keys from the preferences.
-     * @param keys The starting keys to find the subkeys
+     * 
+     * @param keys
+     *            The starting keys to find the subkeys
      * @return Returns a list containing the keys representing
-     * the preferences.
+     *         the preferences.
      */
     public List<String[]> getSubKeys(String... keys) {
         String startKey = convertKey(keys);
