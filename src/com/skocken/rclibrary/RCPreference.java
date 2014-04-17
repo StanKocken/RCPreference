@@ -537,7 +537,7 @@ public class RCPreference {
      * @throws ClassCastException
      */
     public JSONArray getJSONArray(String defJSONValue, String... keys) {
-        String json = getSP().getString(convertKey(keys), null);
+        String json = getString(null, keys);
         if (json == null) {
             if (defJSONValue == null) {
                 return null;
