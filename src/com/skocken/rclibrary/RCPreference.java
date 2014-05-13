@@ -429,6 +429,15 @@ public class RCPreference {
                 if (isDebug()) {
                     Log.w(TAG, ex);
                 }
+                if (ex instanceof ClassCastException) {
+                    try {
+                        return getSP().getInt(convertKey(keys), (int) (defValue));
+                    } catch (Exception ex2) {
+                        if (isDebug()) {
+                            Log.w(TAG, ex2);
+                        }
+                    }
+                }
                 return defValue;
             }
         } else {
