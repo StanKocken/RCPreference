@@ -31,10 +31,19 @@ public class ParserGSON {
 
     public static void parseAndSave(Context context, String json, boolean loadInPendingPreference, RCPreferenceUpdateListener listener) throws JSONException {
         if (json != null) {
+            JSONObject jsonObject = new JSONObject(json);
+            parseAndSave(context, jsonObject, loadInPendingPreference, listener);
+        } else if (RCPreference.isDebug()) {
+            Log.w(TAG, "RCLibrary : No JSON to save");
+        }
+    }
+
+    public static void parseAndSave(Context context, JSONObject jsonObject, boolean loadInPendingPreference, RCPreferenceUpdateListener listener) throws JSONException {
+        if (jsonObject != null) {
             RCPreference rcPref = RCPreference.getRCPreference(context);
             rcPref.setPendingMode(loadInPendingPreference);
             RCEditor editor = rcPref.edit();
-            parseObject(editor, new JSONObject(json), new ArrayList<String>());
+            parseObject(editor, jsonObject, new ArrayList<String>());
             editor.apply();
             if (RCPreference.isDebug()) {
                 Log.v(TAG, "RCLibrary : JSON saved");

@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -196,7 +197,7 @@ public class RCPreference {
 
     /**
      * Apply some preference from the JSON given
-     * 
+     *
      * @param context
      *            The context to retrieve the preference
      * @param json
@@ -208,6 +209,29 @@ public class RCPreference {
      *            The listener to notify when it's over
      */
     public static void setRCPreferenceByJSON(final Context context, final String json, final boolean loadAndWaitToApply, RCPreferenceUpdateListener listener) {
+        try {
+            ParserGSON.parseAndSave(context, json, loadAndWaitToApply, listener);
+        } catch (JSONException e) {
+            if (sDebugMode) {
+                Log.v(TAG, "RCLibrary : ", e);
+            }
+        }
+    }
+
+    /**
+     * Apply some preference from the JSON given
+     *
+     * @param context
+     *            The context to retrieve the preference
+     * @param json
+     *            The JSON to load into preference
+     * @param loadAndWaitToApply
+     *            set to false if you want the current value into preference as soon as possible. If you set this to true, you should use
+     *            "loadPendingToPending(Context context)" when you want to apply the previous download from your URL.
+     * @param listener
+     *            The listener to notify when it's over
+     */
+    public static void setRCPreferenceByJSON(final Context context, final JSONObject json, final boolean loadAndWaitToApply, RCPreferenceUpdateListener listener) {
         try {
             ParserGSON.parseAndSave(context, json, loadAndWaitToApply, listener);
         } catch (JSONException e) {
